@@ -32,7 +32,7 @@
         myBLE.connect(serviceUuid, gotCharacteristics);
       }
 
-      // A function that will be called once got characteristics
+      // A function that will be called once got characteristic
       function gotCharacteristics(error, characteristics) {
         if (error) console.log('error: ', error);
         console.log('characteristics: ', characteristics);
