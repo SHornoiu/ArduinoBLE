@@ -1,59 +1,73 @@
-<!DOCTYPE html>
-  <html>
-    <head>
-      <title>Getting Started with p5.ble.js</title>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
-      <script src="https://unpkg.com/p5ble@0.0.4/dist/p5.ble.js"></script>
-    </head>
 
-    <body>
-      <script>
-      const serviceUuid = "19B10000-E8F2-537E-4F6C-D104768A1214";
-      let myCharacteristic;
-      let myValue = 0;
-      let myBLE;
+<html>
+<head>
 
-      function setup() {
-        // Create a p5ble class
-        myBLE = new p5ble();
+<title>Simple LED, Rocksetta and p5.ble.js</title>
 
-        createCanvas(600, 400);
-        textSize(40);
-        textAlign(CENTER, CENTER);
+<script src="https://cdn.jsdelivr.net/npm/p5@0.10.2/lib/p5.js"></script>
+<script src="https://unpkg.com/p5ble@0.0.6/dist/p5.ble.js"></script>
 
-        // Create a 'Connect' button
-        const connectButton = createButton('Connect')
-        connectButton.mousePressed(connectToBle);
-      }
+<script>
 
-      function connectToBle() {
-        // Connect to a device by passing the service UUID
-        myBLE.connect(serviceUuid, gotCharacteristics);
-      }
+// Global variables and constants
 
-      // A function that will be called once got characteristic
-      function gotCharacteristics(error, characteristics) {
-        if (error) console.log('error: ', error);
-        console.log('characteristics: ', characteristics);
-        myCharacteristic = characteristics[0];
-        // Read the value of the first characteristic
-        myBLE.read(myCharacteristic, gotValue);
-      }
+// The serviceUuid must match the serviceUuid of the device you would like to connect
+const serviceUuid = "19b10010-e8f2-537e-4f6c-d104768a1214";
 
-      // A function that will be called once got values
-      function gotValue(error, value) {
-        if (error) console.log('error: ', error);
-        console.log('value: ', value);
-        myValue = value;
-        // After getting a value, call p5ble.read() again to get the value again
-        myBLE.read(myCharacteristic, gotValue);
-      }
+let myCharacteristic;
+let input;
+let myBLE;
 
-      function draw() {
-        background(250);
-        text(myValue, 100, 100);
-      }
-      </script>
-    </body>
-  </html>
+
+function setup() {
+  myBLE = new p5ble();
+}
+
+
+function connectToBle() {
+  // Connect to a device by passing the service UUID
+  myBLE.connect(serviceUuid, gotCharacteristics);
+}
+
+
+function gotCharacteristics(error, characteristics) {
+  if (error) console.log('error: ', error);
+  console.log('characteristics: ', characteristics);
+  // Set the first characteristic as myCharacteristic
+  myCharacteristic = characteristics[0];
+}
+
+
+function myWriteToBle(myIn) {
+  myBLE.write(myCharacteristic, myIn);
+}
+
+
+</script>
+
+
+</head>
+<body>
+
+<H1>Simple LED, Rocksetta and p5.ble.js</H1>
+<h6>By <a href="https://www.rocksetta.com">Jeremy Ellis</a> Twitter <a href="https://twitter.com/rocksetta">@rocksetta</a></h6>
+
+
+<input type=button value="Connect to Simple-LED" onclick="{
+   connectToBle()
+}">
+
+
+<input type=button value="Led On" onclick="{
+  myWriteToBle('01')
+}">
+
+
+<input type=button value="Led Off" onclick="{
+  myWriteToBle('00')
+}"><br><br>
+
+
+
+</body>
+</html>
